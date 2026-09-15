@@ -1,0 +1,101 @@
+# B. Update User Request
+
+### 1. Request Details
+
+**Method:** `PUT`
+
+**Endpoint:**
+
+```text
+{{baseUrl}}/api/users/{{userid}}
+```
+
+**Authorization / API Key:**
+Use the **same API key / authorization** configured in the previous request.
+
+---
+
+### 2. Request Body
+
+**Body → raw → JSON**
+
+```json
+{
+    "name": "JO",
+    "job": "Director"
+}
+```
+
+---
+
+### 3. Test Script — Verify Status Code
+
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+```
+
+### What does this script do?
+
+It checks whether the API returned **HTTP status code `200`**.
+
+```text
+API Request
+     │
+     ▼
+   PUT /users/{{userid}}
+     │
+     ▼
+   API Response
+     │
+     ▼
+Status Code = 200?
+   │          │
+  YES         NO
+   │           │
+ PASS         FAIL
+```
+
+---
+
+### 4. Expected Response Body
+
+```json
+{
+    "name": "JO",
+    "job": "Director",
+    "updatedAt": "2026-09-15T09:10:12.588Z"
+}
+```
+
+### 5. Request Flow
+
+```text
+{{userid}}
+    │
+    ▼
+PUT Request
+    │
+    ▼
+{{baseUrl}}/api/users/{{userid}}
+    │
+    ▼
+Update User
+    │
+    ├── name → JO
+    └── job  → Director
+    │
+    ▼
+Response
+    │
+    ├── name
+    ├── job
+    └── updatedAt
+```
+
+**Note:** Make sure there is a `/` between `users` and `{{userid}}`:
+
+
+✅ {{baseUrl}}/api/users/{{userid}}
+```

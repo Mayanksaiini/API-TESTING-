@@ -1,0 +1,148 @@
+# A. Create User Request
+
+### 1. Request Details
+
+**Method:** `POST`
+
+**Endpoint:**
+
+```text
+{{baseURL}}/api/users
+```
+
+**Authorization / API Key:**
+Use the **same API key / authorization** configured in the previous request.
+
+---
+
+### 2. Request Body
+
+**Body → raw → JSON**
+
+```json
+{
+    "name": "morpheus",
+    "job": "leader"
+}
+```
+
+---
+
+### 3. Test Script — Extract User ID
+
+After the API creates the user, we extract the `id` from the response and save it as an environment variable.
+
+```javascript
+const response = pm.response.json();   // Read/parse the API response
+
+const userId = response.id;            // Extract the user ID
+
+pm.environment.set("userid", userId);  // Save user ID in environment
+
+console.log("User ID:", userId);        // Print user ID in Postman Console
+```
+
+---
+
+### 4. What the Script Does
+
+**Step 1 — Read API Response**
+
+```javascript
+const response = pm.response.json();
+```
+
+Reads the JSON response returned by the API.
+
+Example response:
+
+```json
+{
+    "name": "morpheus",
+    "job": "leader",
+    "id": "123",
+    "createdAt": "2026-09-15T08:00:00.000Z"
+}
+```
+
+**Step 2 — Get User ID**
+
+```javascript
+const userId = response.id;
+```
+
+Takes the `id` from the response.
+
+```text
+API Response
+     │
+     ├── name
+     ├── job
+     ├── id ──────────► userId
+     └── createdAt
+```
+
+**Step 3 — Store User ID**
+
+```javascript
+pm.environment.set("userid", userId);
+```
+
+Creates/updates the environment variable:
+
+```text
+userid = 123
+```
+
+You can then use it in another request:
+
+```text
+{{userid}}
+```
+
+**Step 4 — Print User ID**
+
+```javascript
+console.log("User ID:", userId);
+```
+
+Displays the ID in the **Postman Console** for debugging.
+
+---
+
+### 5. Environment Variable
+
+After running the request, your environment should contain:
+
+| Variable  | Value                     | Set By              |
+| --------- | ------------------------- | ------------------- |
+| `baseURL` | `https://reqres.in`       | Manually            |
+| `token`   | Generated/extracted value | Previous request    |
+| `userid`  | API-generated user ID     | Create User request |
+
+### Final Flow
+
+```text
+Create User Request
+        │
+        ▼
+   API Response
+        │
+        ▼
+pm.response.json()
+        │
+        ▼
+   response.id
+        │
+        ▼
+     userId
+        │
+        ▼
+pm.environment.set()
+        │
+        ▼
+  userid environment
+        │
+        ▼
+Use {{userid}} in next request
+```

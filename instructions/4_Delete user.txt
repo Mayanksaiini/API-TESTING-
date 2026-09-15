@@ -1,0 +1,107 @@
+# C. Delete User Request
+
+### 1. Request Details
+
+**Method:** `DELETE`
+
+**Endpoint:**
+
+```text
+{{baseUrl}}/api/users/{{userid}}
+```
+
+**Authorization / API Key:**
+Use the **same API key / authorization** configured in the previous requests.
+
+---
+
+### 2. Request Body
+
+**No body is required.**
+
+```text
+Body → No Body
+```
+
+---
+
+### 3. Run the Request
+
+Click **Send** to execute the DELETE request.
+
+The API should delete the user associated with:
+
+```text
+{{userid}}
+```
+
+---
+
+# D. Run the Complete Collection Using Collection Runner
+
+After testing the individual requests, run the **complete collection** using the Postman Collection Runner.
+
+### Collection Flow
+
+```text
+1. Login
+   │
+   ├── Extract token
+   └── Save token → {{token}}
+          │
+          ▼
+2. Create User
+   │
+   ├── Create user
+   └── Extract user ID
+          │
+          ▼
+      Save → {{userid}}
+          │
+          ▼
+3. Update User
+   │
+   └── Use {{userid}}
+          │
+          ▼
+4. Delete User
+   │
+   └── Use {{userid}}
+```
+
+### Steps to Run the Collection
+
+1. Open your **Postman Collection**.
+2. Click **Run** / **Run Collection**.
+3. Select the required **Environment**.
+4. Make sure your requests are in the correct order:
+
+   * Login
+   * Create User
+   * Update User
+   * Delete User
+5. Click **Run**.
+6. Postman will execute all requests sequentially.
+7. Check the **Test Results** to see which requests passed or failed.
+
+### Expected Flow
+
+```text
+Login
+  ↓
+{{token}} created
+  ↓
+Create User
+  ↓
+{{userid}} created
+  ↓
+Update User
+  ↓
+User updated successfully
+  ↓
+Delete User
+  ↓
+User deleted successfully
+```
+
+**Important:** The environment variables such as `{{token}}` and `{{userid}}` are automatically reused by the following requests when the scripts set them during the collection run.

@@ -1,0 +1,348 @@
+ # Postman User Flow Automation
+
+## 1. Create Environment
+
+Create a Postman environment and add these variables:
+
+```text
+baseUrl   = https://reqres.in
+token     = Automatically set by test script
+userId    = Automatically set by test script
+timestamp = Automatically set by test script
+```
+
+### Why use `baseUrl`?
+
+Instead of writing:
+
+https://reqres.in/api/login
+
+use: {{baseUrl}}/api/login
+
+
+
+This makes the requests easier to maintain.
+
+# A. Login Request – Extract Token
+
+## Step 1: Create Request
+
+Create a new request.
+
+**Method:POST
+
+**Endpoint:{{baseUrl}}/api/login
+
+### Header
+
+If the current ReqRes API requires an API key, add it in the header:
+
+x-api-key: YOUR_API_KEY
+
+# Step 2: Create Request Body
+
+Go to:Body → raw → JSON
+
+Add: {
+    "email": "eve.holt@reqres.in",
+    "password": "cityslicka"
+}
+
+### Important
+
+JSON is **case-sensitive**.
+
+For example: "email" and "Email"are different.
+
+# Step 3: Send the Request
+
+Click **Send**.
+
+Expected response:
+
+json
+{
+    "token": "SOME_TOKEN_VALUE"
+}
+
+Now we have successfully received a token from the API.
+
+---
+
+# B. Test 1 – Check Status Code
+
+Add this script in the **Tests** section:
+
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+```
+
+### What does it do?
+
+It checks whether the API returned HTTP status code **200**.
+
+```text
+API Response
+      ↓
+Status = 200?
+   /       \
+ YES       NO
+  ↓         ↓
+PASS      FAIL
+```
+
+---
+
+# C. Test 2 – Check and Save Token
+
+Add this script:
+
+```javascript
+pm.test("Response has 'token' property", function () {
+
+    var jsonData = pm.response.json();
+
+    pm.expect(jsonData).to.have.property('token');
+
+    pm.environment.set('token', jsonData.token);
+
+    console.log('token value is ; ', jsonData.token);
+
+    console.log('token value is ; ', pm.environment.get('token'));
+
+});
+```
+
+---
+
+# D. Breakdown of the Script
+
+## 1. `pm.test()`
+
+```javascript
+pm.test("Response has 'token' property", function () {
+```
+
+Creates a Postman test.
+
+The test name is:
+
+```text
+Response has 'token' property
+```
+
+The `function(){ }` contains the instructions that Postman should execute.
+
+---
+
+## 2. `pm.response.json()`
+
+```javascript
+var jsonData = pm.response.json();
+```
+
+Reads the API response and converts the JSON response into a JavaScript object.
+
+Example response:
+
+```json
+{
+    "token": "abc123"
+}
+```
+
+Now:
+
+```text
+jsonData
+   ↓
+{
+    token: "abc123"
+}
+```
+
+---
+
+## 3. `var jsonData`
+
+```javascript
+var jsonData
+```
+
+Creates a variable called:
+
+```text
+jsonData
+```
+
+The value stored inside it is the API response.
+
+So:
+
+```javascript
+var jsonData = pm.response.json();
+```
+
+means:
+
+> Create a variable called `jsonData` and store the parsed API response in it.
+
+---
+
+## 4. Check Whether Token Exists
+
+```javascript
+pm.expect(jsonData).to.have.property('token');
+```
+
+This checks whether `jsonData` contains a property called:
+
+```text
+token
+```
+
+Example:
+
+```json
+{
+    "token": "abc123"
+}
+```
+
+Token exists:
+
+```text
+PASS ✅
+```
+
+If response is:
+
+```json
+{
+    "message": "Login failed"
+}
+```
+
+Token doesn't exist:
+
+```text
+FAIL ❌
+```
+
+### Important
+
+This checks that the **token property exists**.
+
+It does not prove that the token is valid.
+
+---
+
+## 5. Save Token in Environment
+
+```javascript
+pm.environment.set('token', jsonData.token);
+```
+
+This saves the token received from the API into the Postman environment.
+
+Example:
+
+```text
+API Response
+     ↓
+jsonData.token
+     ↓
+"abc123"
+     ↓
+Postman Environment
+     ↓
+token = abc123
+```
+
+Now the environment contains:
+
+```text
+token = abc123
+```
+
+---
+
+## 6. Get Token from Response
+
+```javascript
+jsonData.token
+```
+
+Means:
+
+> Get the value stored inside the `token` property of `jsonData`.
+
+Example:
+
+```json
+{
+    "token": "abc123"
+}
+```
+
+Then:
+
+```javascript
+jsonData.token
+```
+
+returns:
+
+```text
+abc123
+```
+
+---
+
+## 7. Print Token from API Response
+
+```javascript
+console.log('token value is ; ', jsonData.token);
+```
+
+Prints the token received directly from the API response in the Postman Console.
+
+Example:
+
+```text
+token value is ; abc123
+```
+
+---
+
+## 8. Get Token from Environment
+
+```javascript
+pm.environment.get('token')
+```
+
+This retrieves the value stored in the environment variable:
+
+```text
+token
+```
+
+If:
+
+```text
+token = abc123
+```
+
+then:
+
+```javascript
+pm.environment.get('token'
+```
+
+
+
+
+
+
