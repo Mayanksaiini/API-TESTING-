@@ -1,0 +1,268 @@
+# Create User
+
+In this collection, we are going to test the **Swagger Petstore API** using the **API Chaining** method.
+
+For creating requests in Postman, you can either manually enter the API endpoint and request body or import a **cURL** command. In this collection, we are using the **cURL format**.
+
+## Create User
+
+### 1. Import the cURL Request
+
+1. Go to [Swagger Petstore](https://petstore.swagger.io).
+2. Copy the required **cURL** command for creating a user.
+3. Open **Postman** and click **Import**.
+4. Paste the copied cURL command.
+5. Select the collection where you want to save the request.
+
+Postman will automatically configure the:
+
+* HTTP method
+* API endpoint
+* Headers
+* Request body
+
+### 2. Configure the Request Body
+
+Now, we will replace the hard-coded user values with **variables** so that we can generate dynamic data for every request.
+
+Use the following request body:
+
+```json
+{
+    "id": {{id}},
+    "username": "{{username}}",
+    "firstName": "{{firstName}}",
+    "lastName": "{{lastName}}",
+    "email": "{{email}}",
+    "password": "{{password}}",
+    "phone": "{{phone}}",
+    "userStatus": {{userStatus}}
+}
+```
+
+> **Note:** String values should be enclosed in quotes, while numeric values such as `id` and `userStatus` should not.
+
+### 3. Add the Test Script
+
+After receiving the response, we will verify that the request was successful by checking the HTTP status code.
+
+Add the following script under the **Tests** section:
+
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+```
+
+### 4. Add the Pre-request Script
+
+Before sending the request, we will generate random user data and store the values in Postman variables.
+
+Add the following script under **Pre-request Script**:
+
+```javascript
+const randomnum = Math.floor(Math.random() * 100) + 1;
+const randomstr = "john" + Math.random().toString(36).substring(2);
+
+pm.environment.set("id", randomnum);
+
+pm.collectionVariables.set("username", randomstr);
+pm.collectionVariables.set("firstName", randomstr);
+pm.collectionVariables.set("lastName", randomstr);
+pm.collectionVariables.set("em
+```
+
+Aftermath: All variable will be selected &and body will show 
+{
+    "code": 200,
+    "type": "unknown",
+    "message": "8"
+}
+
+
+
+# Get User by Name
+
+### 1. Create the Request
+
+Use the following endpoint:
+
+```text
+GET https://petstore.swagger.io/v2/user/{{firstName}}
+```
+
+Here, `{{firstName}}` contains the value generated in the **Create User** request.
+
+### 2. Add the Test Script
+
+Under the **Tests** section, add:
+
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+```
+
+### 3. Expected Response
+
+The API should return the details of the user that was created earlier.
+
+Example:
+
+```json
+{
+    "id": 53,
+    "username": "john69bnwyw2hrb",
+    "firstName": "john69bnwyw2hrb",
+    "lastName": "john69bnwyw2hrb",
+    "email": "john1n4rw7g32bh@gmail.com",
+    "password": "john69bnwyw2hrb",
+    "phone": "2323211111",
+    "userStatus": 0
+}
+```
+
+The important part here is that the `firstName` variable from the **Create User** request is reused in the endpoint.
+
+---
+
+# Update User by Name
+
+After retrieving the user, we will update the same user using the `firstName` variable.
+
+### 1. Endpoint
+
+```text
+PUT https://petstore.swagger.io/v2/user/{{firstName}}
+```
+
+### 2. Request Body
+
+```json
+{
+    "id": {{id}},
+    "username": "{{username}}",
+    "firstName": "{{firstName}}",
+    "lastName": "{{lastName}}",
+    "email": "{{email}}",
+    "password": "{{password}}",
+    "phone": "{{phone}}",
+    "userStatus": {{userStatus}}
+}
+```
+
+### 3. Pre-request Script
+
+Before sending the request, we will generate a new random string and use it to update the user's email and phone number.
+
+```javascript
+const randomstr = "john" + Math.random().toString(36).substring(2);
+
+// Update email and phone number in the request body
+pm.collectionVariables.set("email", randomstr + "@gmail.com");
+pm.collectionVariables.set("phone", "2323211111");
+```
+
+### 4. Test Script
+
+Under the **Tests** section, add:
+
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+```
+
+### 5. Expected Response
+
+After successfully updating the user, the API returns a response similar to:
+
+```json
+{
+    "code": 200,
+    "type": "unknown",
+    "message": "25"
+}
+```
+
+The response indicates that the update request was processed successfully.
+
+---
+
+# Delete User by Name
+
+Finally, we will delete the same user that was created at the beginning of the API chain.
+
+### 1. Endpoint
+
+```text
+DELETE https://petstore.swagger.io/v2/user/{{firstName}}
+```
+
+### 2. Request Body
+
+```json
+{
+    "id": {{id}},
+    "username": "{{username}}",
+    "firstName": "{{firstName}}",
+    "lastName": "{{lastName}}",
+    "email": "{{email}}",
+    "password": "{{password}}",
+    "phone": "{{phone}}",
+    "userStatus": {{userStatus}}
+}
+```
+
+### 3. Test Script
+
+Under the **Tests** section:
+
+```javascript
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+```
+
+### 4. Clear Collection Variables
+
+After the user has been successfully deleted, we can remove the variables that were used during the API chain.
+
+```javascript
+pm.environment.unset("id");
+
+pm.collectionVariables.unset("username");
+pm.collectionVariables.unset("firstName");
+pm.collectionVariables.unset("lastName");
+pm.collectionVariables.unset("email");
+pm.collectionVariables.unset("password");
+pm.collectionVariables.unset("phone");
+pm.collectionVariables.unset("userStatus");
+```
+
+This prevents old test data from being reused in future runs.
+
+---
+
+# Complete API Chain
+
+The complete flow is:
+
+```text
+Create User
+     ↓
+Generate Random User Data
+     ↓
+Get User by Name
+     ↓
+Update User by Name
+     ↓
+Delete User by Name
+     ↓
+Clear Variables
+```
+
+This demonstrates **API Chaining in Postman**, where data generated in one request is reused by subsequent requests.
+
+
+
