@@ -1,0 +1,179 @@
+{
+  "info": {
+    "_postman_id": "dbae65f7-48b7-4c37-bb5b-8d76a63be60f",
+    "name": "Using_XML_petstore_swagger.io",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56013064",
+    "_collection_link": "https://go.postman.co/collection/56013064-dbae65f7-48b7-4c37-bb5b-8d76a63be60f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "add pet",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Check the Name\", function(){\n    var jsonData = xml2Json(pm.response.text());\n    pm.expect(jsonData.Pet.name).to.eq(\"doggie\");\n});\n\n// captured value as collection variable \nvar jsonData = xml2Json(pm.response.text());\npm.collectionVariables.set(\"petid\", jsonData.Pet.id);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/xml"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/xml"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<Pet>\r\n\t<id>0</id>\r\n\t<Category>\r\n\t\t<id>0</id>\r\n\t\t<name>string</name>\r\n\t</Category>\r\n\t<name>doggie</name>\r\n\t<photoUrls>\r\n\t\t<photoUrl>string</photoUrl>\r\n\t</photoUrls>\r\n\t<tags>\r\n\t\t<Tag>\r\n\t\t\t<id>0</id>\r\n\t\t\t<name>string</name>\r\n\t\t</Tag>\r\n\t</tags>\r\n\t<status>available</status>\r\n</Pet>",
+          "options": {
+            "raw": {
+              "language": "xml"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://petstore.swagger.io/v2/pet",
+          "protocol": "https",
+          "host": [
+            "petstore",
+            "swagger",
+            "io"
+          ],
+          "path": [
+            "v2",
+            "pet"
+          ]
+        },
+        "description": "Generated from cURL: curl -X 'POST' \\\r\n  'https://petstore.swagger.io/v2/pet' \\\r\n  -H 'accept: application/xml' \\\r\n  -H 'Content-Type: application/xml' \\\r\n  -d '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<Pet>\r\n\t<id>0</id>\r\n\t<Category>\r\n\t\t<id>0</id>\r\n\t\t<name>string</name>\r\n\t</Category>\r\n\t<name>doggie</name>\r\n\t<photoUrls>\r\n\t\t<photoUrl>string</photoUrl>\r\n\t</photoUrls>\r\n\t<tags>\r\n\t\t<Tag>\r\n\t\t\t<id>0</id>\r\n\t\t\t<name>string</name>\r\n\t\t</Tag>\r\n\t</tags>\r\n\t<status>available</status>\r\n</Pet>'"
+      },
+      "response": []
+    },
+    {
+      "name": "find by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Check Pet ID\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData.id).to.eq(parseInt(pm.collectionVariables.get(\"petid\")));\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://petstore.swagger.io/v2/pet/{{petid}}",
+          "protocol": "https",
+          "host": [
+            "petstore",
+            "swagger",
+            "io"
+          ],
+          "path": [
+            "v2",
+            "pet",
+            "{{petid}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update by id ",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Check Pet Name\", function(){\r\n    var jsonData = xml2Json(pm.response.text());\r\n    pm.expect(jsonData.Pet.name).to.eq(\"Kitto\")\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "accept",
+            "value": "application/xml"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/xml"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<Pet>\r\n\t<id>{{petid}}</id>\r\n\t<Category>\r\n\t\t<id>0</id>\r\n\t\t<name>string</name>\r\n\t</Category>\r\n\t<name>Kitto</name>\r\n\t<photoUrls>\r\n\t\t<photoUrl>string</photoUrl>\r\n\t</photoUrls>\r\n\t<tags>\r\n\t\t<Tag>\r\n\t\t\t<id>0</id>\r\n\t\t\t<name>string</name>\r\n\t\t</Tag>\r\n\t</tags>\r\n\t<status>available</status>\r\n</Pet>",
+          "options": {
+            "raw": {
+              "language": "xml"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://petstore.swagger.io/v2/pet",
+          "protocol": "https",
+          "host": [
+            "petstore",
+            "swagger",
+            "io"
+          ],
+          "path": [
+            "v2",
+            "pet"
+          ]
+        },
+        "description": "Generated from cURL: curl -X 'PUT' \\\r\n  'https://petstore.swagger.io/v2/pet' \\\r\n  -H 'accept: application/xml' \\\r\n  -H 'Content-Type: application/xml' \\\r\n  -d '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<Pet>\r\n\t<id>0</id>\r\n\t<Category>\r\n\t\t<id>0</id>\r\n\t\t<name>string</name>\r\n\t</Category>\r\n\t<name>doggie</name>\r\n\t<photoUrls>\r\n\t\t<photoUrl>string</photoUrl>\r\n\t</photoUrls>\r\n\t<tags>\r\n\t\t<Tag>\r\n\t\t\t<id>0</id>\r\n\t\t\t<name>string</name>\r\n\t\t</Tag>\r\n\t</tags>\r\n\t<status>available</status>\r\n</Pet>'"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.unset(\"petid\");"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://petstore.swagger.io/v2/pet/{{petid}}",
+          "protocol": "https",
+          "host": [
+            "petstore",
+            "swagger",
+            "io"
+          ],
+          "path": [
+            "v2",
+            "pet",
+            "{{petid}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
